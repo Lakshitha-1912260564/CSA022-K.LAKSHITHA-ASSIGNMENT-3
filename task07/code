@@ -1,0 +1,35 @@
+#include <stdio.h>
+#define MAXC 12
+
+int counts[MAXC+1];
+int order[MAXC];
+
+void sort_results(int c){
+    for(int i=1;i<=c;i++) order[i-1]=i;
+    for(int i=0;i<c-1;i++){
+        int mx=i;
+        for(int j=i+1;j<c;j++)
+            if(counts[order[j]]>counts[order[mx]]) mx=j;
+        int t=order[i];order[i]=order[mx];order[mx]=t;
+    }
+}
+int main(void){
+    int votes[]={1,2,3,2,1,5,0,-1,13,2,1,3,3,3,5,5};
+    int nv=sizeof votes/sizeof votes[0], candidates=5;
+    for(int i=1;i<=candidates;i++) counts[i]=0;
+    int invalid=0;
+    for(int i=0;i<nv;i++){
+        if(votes[i]>=1 && votes[i]<=candidates) counts[votes[i]]++;
+        else invalid++;
+    }
+    sort_results(candidates);
+    printf("Valid: %d, Invalid: %d\n",nv-invalid,invalid);
+    for(int i=0;i<candidates;i++)
+        printf("Candidate %d: %d\n",order[i],counts[order[i]]);
+    int top=counts[order[0]];
+    if(candidates>1 && counts[order[1]]==top) printf("Tie between:");
+    else printf("Winner:");
+    for(int i=0;i<candidates && counts[order[i]]==top;i++) printf(" %d",order[i]);
+    printf("\n");
+    return 0;
+}
