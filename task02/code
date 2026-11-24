@@ -1,0 +1,69 @@
+#include <stdio.h>
+
+long cmp_bub, swap_bub, cmp_sel, swap_sel, cmp_ins, shift_ins;
+
+void bubble_sort(int a[], int n)
+{
+    cmp_bub = 0; swap_bub = 0;
+    for (int i = 0; i < n - 1; i++) {
+        int swapped = 0; /* early-exit flag */
+        for (int j = 0; j < n - 1 - i; j++) {
+            cmp_bub++;
+            if (a[j] > a[j + 1]) {
+                int t = a[j]; a[j] = a[j + 1]; a[j + 1] = t;
+                swap_bub++;
+                swapped = 1;
+            }
+        }
+        if (!swapped) break; /* already sorted */
+    }
+}
+
+void selection_sort(int a[], int n)
+{
+    cmp_sel = 0; swap_sel = 0;
+    for (int i = 0; i < n - 1; i++) {
+        int min = i;
+        for (int j = i + 1; j < n; j++) {
+            cmp_sel++;
+            if (a[j] < a[min]) min = j;
+        }
+        if (min != i) {
+            int t = a[i]; a[i] = a[min]; a[min] = t;
+            swap_sel++;
+        }
+    }
+}
+
+void insertion_sort(int a[], int n)
+{
+    cmp_ins = 0; shift_ins = 0;
+    for (int i = 1; i < n; i++) {
+        int key = a[i], j = i - 1;
+        while (j >= 0) {
+            cmp_ins++;
+            if (a[j] > key) {
+                a[j + 1] = a[j];
+                shift_ins++;
+                j--;
+            } else break;
+        }
+        a[j + 1] = key;
+    }
+}
+
+int main(void)
+{
+    int base[] = {64, 34, 25, 12, 22, 11, 90, 5};
+    int n = 8, a[20];
+    for (int i=0;i<n;i++) a[i]=base[i];
+    bubble_sort(a,n);
+    printf("Bubble: cmp=%ld swaps=%ld\n",cmp_bub,swap_bub);
+    for (int i=0;i<n;i++) a[i]=base[i];
+    selection_sort(a,n);
+    printf("Selection: cmp=%ld swaps=%ld\n",cmp_sel,swap_sel);
+    for (int i=0;i<n;i++) a[i]=base[i];
+    insertion_sort(a,n);
+    printf("Insertion: cmp=%ld shifts=%ld\n",cmp_ins,shift_ins);
+    return 0;
+}
