@@ -1,0 +1,38 @@
+#include <stdio.h>
+#define D 3
+#define M 4
+
+void row_totals(int rows,int cols,int rain[rows][cols],int total[rows]){
+    for(int i=0;i<rows;i++){ total[i]=0;
+        for(int j=0;j<cols;j++) total[i]+=rain[i][j]; }
+}
+void col_averages(int rows,int cols,int rain[rows][cols],double avg[cols]){
+    for(int j=0;j<cols;j++){ long s=0;
+        for(int i=0;i<rows;i++) s+=rain[i][j];
+        avg[j]=(double)s/rows; }
+}
+void wettest(int rows,int cols,int rain[rows][cols],int *wi,int *wj){
+    *wi=0; *wj=0;
+    for(int i=0;i<rows;i++) for(int j=0;j<cols;j++)
+        if(rain[i][j]>rain[*wi][*wj]){*wi=i;*wj=j;}
+}
+double state_average(int rows,int cols,int rain[rows][cols]){
+    long s=0;
+    for(int i=0;i<rows;i++) for(int j=0;j<cols;j++) s+=rain[i][j];
+    return (double)s/(rows*cols);
+}
+int main(void){
+    int rain[D][M]={{100,120,80,90},{60,40,50,55},{200,210,190,220}};
+    int total[D]; double avg[M];
+    row_totals(D,M,rain,total);
+    col_averages(D,M,rain,avg);
+    for(int i=0;i<D;i++) printf("District %d total: %d\n",i,total[i]);
+    for(int j=0;j<M;j++) printf("Month %d avg: %.2f\n",j,avg[j]);
+    int wi,wj; wettest(D,M,rain,&wi,&wj);
+    printf("Wettest: district %d month %d = %d\n",wi,wj,rain[wi][wj]);
+    double st=state_average(D,M,rain);
+    double th=0.6*st*M;
+    printf("Deficient (<60%% = %.2f):\n",th);
+    for(int i=0;i<D;i++) if(total[i]<th) printf(" District %d (%d)\n",i,total[i]);
+    return 0;
+}
